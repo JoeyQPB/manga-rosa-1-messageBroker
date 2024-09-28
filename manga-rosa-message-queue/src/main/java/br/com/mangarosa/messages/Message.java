@@ -128,4 +128,17 @@ public class Message implements Serializable {
     public boolean isExperied() {
         return this.createdAt.isBefore(LocalDateTime.now().minusMinutes(5));
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("========== MESSAGE ============").append("\n");
+        sb.append("ID: ").append(this.getId()).append("\n");
+        sb.append("Message: ").append(this.getMessage()).append("\n");
+        sb.append("Producer: ").append(this.getProducer().name()).append("\n");
+        sb.append("CreatedAt: ").append(this.getCreatedAt()).append("\n");
+        sb.append("Consumed: ").append(this.isConsumed()).append("\n");
+        sb.append("Expired: ").append(this.isExperied()).append("\n");
+        return sb.toString();
+    }
 }

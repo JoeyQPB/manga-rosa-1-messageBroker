@@ -1,5 +1,6 @@
 package br.com.mangarosa;
 
+import br.com.mangarosa.messages.Message;
 import br.com.mangarosa.messages.MessageBroker;
 import br.com.mangarosa.messages.consumers.ConsumerBrokerImpl;
 import br.com.mangarosa.messages.interfaces.Consumer;
@@ -10,6 +11,7 @@ import br.com.mangarosa.messages.producers.ProducerBrokerImpl;
 import br.com.mangarosa.messages.repositories.InMemoryMessageRepositoryImpl;
 import br.com.mangarosa.messages.topics.TopicBrokerImpl;
 
+import java.util.List;
 import java.util.Scanner;
 
 // IN <\src\main\java> RUN = javac br\com\mangarosa\*.java
@@ -30,9 +32,13 @@ public class Main {
     public static Consumer fastDeliveryItemsConsumer;
     public static Consumer longDistanceItemsConsumer;
 
-    public static void main(String[] args) throws InterruptedException {
-        setUp();
-        interaction();
+    public static void main(String[] args) {
+        try {
+            setUp();
+            interaction();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void setUp() {
@@ -69,17 +75,18 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Boolean alive = true;
 
-
         while (alive) {
             int topicNumber;
-            int producerNumber;
+            int topicOption;
             String messageText;
             String aliveModify;
+            List<Message> messageList;
 
             System.out.println("Bem vindo ao Message Broker!");
             System.out.println("Selecione um tópico para sua mensagem: \n" +
-                                "\t 1 - fastDeliveryItems\n" +
-                                "\t 2 - longDistanceItems");
+                    "\t 1 - fastDeliveryItems\n" +
+                    "\t 2 - longDistanceItems");
+
             topicNumber = sc.nextInt();
             sc.nextLine();
 
@@ -88,46 +95,104 @@ public class Main {
                 System.out.println("Selecione um producer para sua mensagem: \n" +
                         "\t 1 - FoodDeliveryProducer\n" +
                         "\t 2 - PhysicPersonDeliveryProducer");
-                producerNumber = sc.nextInt();
+
+                System.out.println("\nOu selecione um dos métodos: \n" +
+                        "\t 3 - Ver todas as mensagens NÃO consumidas de um topico\n" +
+                        "\t 4 - Ver todas as mensagens consumidas de um topico");
+
+                topicOption = sc.nextInt();
                 sc.nextLine();
 
-                if (producerNumber == 1) {
-                    System.out.println("\nProducer: FoodDeliveryProducer");
-                    System.out.println("Digite sua mensagem: ");
-                    messageText = sc.nextLine();
+                switch (topicOption) {
+                    case 1:
+                        System.out.println("\nProducer: FoodDeliveryProducer");
+                        System.out.println("Digite sua mensagem: ");
+                        messageText = sc.nextLine();
+                        foodDeliveryProducer.sendMessage(messageText);
+                        break;
 
-                    foodDeliveryProducer.sendMessage(messageText);
-                } else {
-                    System.out.println("\nProducer: PhysicPersonDeliveryProducer");
-                    System.out.println("Digite sua mensagem: ");
-                    messageText = sc.nextLine();
+                    case 2:
+                        System.out.println("\nProducer: PhysicPersonDeliveryProducer");
+                        System.out.println("Digite sua mensagem: ");
+                        messageText = sc.nextLine();
+                        physicPersonDeliveryProducer.sendMessage(messageText);
+                        break;
 
-                    physicPersonDeliveryProducer.sendMessage(messageText);
+                    case 3:
+                        messageList = repository.getAllNotConsumedMessagesByTopic("fast-delivery-items");
+                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        for (Message message : messageList) {
+                            System.out.println(message.toString());
+                        }
+                        break;
+
+                    case 4:
+                        messageList = repository.getAllConsumedMessagesByTopic("fast-delivery-items");
+                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        for (Message message : messageList) {
+                            System.out.println(message.toString());
+                        }
+                        break;
+
+                    default:
+                        System.out.println("Opção inválida!");
+                        break;
                 }
 
-            } else {
+
+            } else if (topicNumber == 2) {
                 System.out.println("Topic: long-distance-items");
                 System.out.println("Selecione um producer para sua mensagem: \n" +
                         "\t 1 - PyMarketPlaceProducer\n" +
                         "\t 2 - FastDeliveryProducer");
-                producerNumber = sc.nextInt();
+
+                System.out.println("\nOu selecione um dos métodos: \n" +
+                        "\t 3 - Ver todas as mensagens NÃO consumidas de um topico\n" +
+                        "\t 4 - Ver todas as mensagens consumidas de um topico");
+
+                topicOption = sc.nextInt();
                 sc.nextLine();
 
-                if (producerNumber == 1) {
-                    System.out.println("\nProducer: PyMarketPlaceProducer");
-                    System.out.println("Digite sua mensagem: ");
-                    messageText = sc.nextLine();
+                switch (topicOption) {
+                    case 1:
+                        System.out.println("\nProducer: PyMarketPlaceProducer");
+                        System.out.println("Digite sua mensagem: ");
+                        messageText = sc.nextLine();
+                        pyMarketPlaceProducer.sendMessage(messageText);
+                        break;
 
-                    pyMarketPlaceProducer.sendMessage(messageText);
-                } else {
-                    System.out.println("\nProducer: FastDeliveryProducer");
-                    System.out.println("Digite sua mensagem: ");
-                    messageText = sc.nextLine();
+                    case 2:
+                        System.out.println("\nProducer: FastDeliveryProducer");
+                        System.out.println("Digite sua mensagem: ");
+                        messageText = sc.nextLine();
+                        fastDeliveryProducer.sendMessage(messageText);
+                        break;
 
-                    fastDeliveryProducer.sendMessage(messageText);
+                    case 3:
+                        messageList = repository.getAllNotConsumedMessagesByTopic("long-distance-items");
+                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        for (Message message : messageList) {
+                            System.out.println(message.toString());
+                        }
+                        break;
+
+                    case 4:
+                        messageList = repository.getAllConsumedMessagesByTopic("long-distance-items");
+                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        for (Message message : messageList) {
+                            System.out.println(message.toString());
+                        }
+                        break;
+
+                    default:
+                        System.out.println("Opção inválida!");
+                        break;
                 }
+            } else {
+                System.out.println("Opção inválida!");
             }
-            Thread.sleep(5000);
+
+            Thread.sleep(4000);
 
             do {
                 System.out.println("\nDeseja continuar no message broker (y or n)");

@@ -120,7 +120,10 @@ public class Main {
 
                     case 3:
                         messageList = repository.getAllNotConsumedMessagesByTopic("fast-delivery-items");
-                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        if (messageList.isEmpty()) {
+                            System.out.println("Lista está vazia");
+                            break;
+                        }
                         for (Message message : messageList) {
                             System.out.println(message.toString());
                         }
@@ -128,7 +131,10 @@ public class Main {
 
                     case 4:
                         messageList = repository.getAllConsumedMessagesByTopic("fast-delivery-items");
-                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        if (messageList.isEmpty()) {
+                            System.out.println("Lista está vazia");
+                            break;
+                        }
                         for (Message message : messageList) {
                             System.out.println(message.toString());
                         }
@@ -170,7 +176,10 @@ public class Main {
 
                     case 3:
                         messageList = repository.getAllNotConsumedMessagesByTopic("long-distance-items");
-                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        if (messageList.isEmpty()) {
+                            System.out.println("Lista está vazia");
+                            break;
+                        }
                         for (Message message : messageList) {
                             System.out.println(message.toString());
                         }
@@ -178,7 +187,10 @@ public class Main {
 
                     case 4:
                         messageList = repository.getAllConsumedMessagesByTopic("long-distance-items");
-                        if (messageList.isEmpty()) throw new NullPointerException("List is null!");
+                        if (messageList.isEmpty()) {
+                            System.out.println("Lista está vazia");
+                            break;
+                        }
                         for (Message message : messageList) {
                             System.out.println(message.toString());
                         }
@@ -192,7 +204,7 @@ public class Main {
                 System.out.println("Opção inválida!");
             }
 
-            Thread.sleep(4000);
+            Thread.sleep(3000);
 
             do {
                 System.out.println("\nDeseja continuar no message broker (y or n)");
